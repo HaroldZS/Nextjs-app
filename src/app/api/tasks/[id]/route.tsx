@@ -1,21 +1,48 @@
-import { NextResponse } from "next/server";
-import { NextApiRequest } from "next";
+import { NextRequest, NextResponse } from "next/server";
+import { prisma } from "@/libs/prisma";
 
 type Params = {
   id: number;
 };
 
-export function GET(request: NextApiRequest, { params }: { params: Params }) {
-  return NextResponse.json("Getting task" + params.id);
-}
-
-export function PUT(request: NextApiRequest, { params }: { params: Params }) {
-  return NextResponse.json("Updating task" + params.id);
-}
-
-export function DELETE(
-  request: NextApiRequest,
+export async function GET(
+  request: NextRequest,
   { params }: { params: Params }
 ) {
-  return NextResponse.json("Deleting task" + params.id);
+  const task = await prisma.task.findUnique({
+    where: {
+      id: Number(params.id),
+    },
+  });
+
+  return NextResponse.json(task);
+}
+
+export async function PUT(
+  request: NextRequest,
+  { params }: { params: Params }
+) {
+  const data = await request.json();
+
+  const updatedTask = await prisma.task.update({
+    where: {
+      id: Number(params.id),
+    },
+    data: data,
+  });
+
+  return NextResponse.json(updatedTask);
+}
+
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: Params }
+) {
+  const removedTask = await prisma.task.delete({
+    where: {
+      id: Number(params.id),
+    },
+  });
+
+  return NextResponse.json(removedTask);
 }
