@@ -9,13 +9,20 @@ function TaskForm() {
     e: React.FormEvent<HTMLFormElement>
   ): Promise<void> => {
     e.preventDefault();
-    const title = e.target.title.value;
-    const description = e.target.description.value;
+    const { title, description } = e.target as typeof e.target & {
+      title: { value: string };
+      description: { value: string };
+    };
+    const titleValue = title.value;
+    const descriptionValue = description.value;
 
     const res = await fetch("/api/tasks", {
       method: "POST",
-      body: JSON.stringify({ title, description }),
-      headers: { "Content-type": "aplication/json" },
+      body: JSON.stringify({
+        title: titleValue,
+        description: descriptionValue,
+      }),
+      headers: { "Content-type": "application/json" },
     });
 
     const data = await res.json();
@@ -27,7 +34,7 @@ function TaskForm() {
   return (
     <div className="container flex mx-auto h-screen justify-center items-center">
       <form
-        className="flex flex-col bg-base-300 w-1/3 px-5 py-10 rounded-md items-center"
+        className="flex flex-col bg-base-300 w-1/3 px-5 py-10 rounded-md items-center shadow-xl"
         onSubmit={onSubmit}
       >
         <label className="label-text self-start ml-5 mb-1" htmlFor="title">
@@ -36,7 +43,7 @@ function TaskForm() {
         <input
           id="title"
           type="text"
-          placeholder="Type here"
+          placeholder="Title"
           className="input input-bordered w-[90%] mb-5"
         />
         <label
@@ -48,7 +55,7 @@ function TaskForm() {
         <textarea
           id="description"
           className="textarea textarea-bordered w-[90%] mb-6"
-          placeholder="Bio"
+          placeholder="Description"
         ></textarea>
         <button className="btn btn-secondary w-[90%]">Submit</button>
       </form>
