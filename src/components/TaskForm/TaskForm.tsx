@@ -1,35 +1,60 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
-function TaskForm() {
+function TaskForm({ paramId }: { paramId: number }) {
   const router = useRouter();
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+
+  useEffect(() => {
+    if (paramId) {
+      fetch(`/api/tasks/${paramId}`)
+        .then((res) => res.json())
+        .then((data) => {
+          setTitle(data.title);
+          setDescription(data.description);
+        });
+    }
+  }, []);
 
   const onSubmit = async (
     e: React.FormEvent<HTMLFormElement>
   ): Promise<void> => {
     e.preventDefault();
-    const { title, description } = e.target as typeof e.target & {
-      title: { value: string };
-      description: { value: string };
-    };
-    const titleValue = title.value;
-    const descriptionValue = description.value;
 
+    if (paramId) {
+      editTask();
+    } else {
+      createTask();
+    }
+
+    router.refresh();
+    router.push("/");
+  };
+
+  async function createTask() {
     const res = await fetch("/api/tasks", {
       method: "POST",
       body: JSON.stringify({
-        title: titleValue,
-        description: descriptionValue,
+        title,
+        description,
       }),
       headers: { "Content-type": "application/json" },
     });
+  }
 
-    const data = await res.json();
-    console.log(data);
-
-    router.push("/");
-  };
+  async function editTask() {
+    const res = await fetch(`/api/tasks/${paramId}`, {
+      method: "PUT",
+      body: JSON.stringify({
+        title,
+        description,
+      }),
+      headers: { "Content-type": "application/json" },
+    });
+  }
 
   return (
     <div className="container flex mx-auto h-screen justify-center items-center">
@@ -45,6 +70,8 @@ function TaskForm() {
           type="text"
           placeholder="Title"
           className="input input-bordered w-[90%] mb-5"
+          onChange={(e) => setTitle(e.target.value)}
+          value={title}
         />
         <label
           className="label-text self-start ml-5 mb-1"
@@ -56,8 +83,12 @@ function TaskForm() {
           id="description"
           className="textarea textarea-bordered w-[90%] mb-6"
           placeholder="Description"
+          onChange={(e) => setDescription(e.target.value)}
+          value={description}
         ></textarea>
-        <button className="btn btn-secondary w-[90%]">Submit</button>
+        <button className="btn btn-secondary w-[90%]">
+          {paramId ? "Edit Task" : "Create Task"}
+        </button>
       </form>
     </div>
   );

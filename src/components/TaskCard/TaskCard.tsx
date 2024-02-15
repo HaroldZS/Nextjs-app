@@ -1,5 +1,7 @@
 "use client";
 
+import { useRouter } from "next/navigation";
+
 interface Task {
   id: number;
   title: string;
@@ -8,9 +10,14 @@ interface Task {
   createdAt: Date;
 }
 
-function TaskCard({ title, description, status, createdAt }: Task) {
+function TaskCard({ id, title, description, status, createdAt }: Task) {
+  const router = useRouter();
+
   return (
-    <div className="card w-96 bg-base-300 shadow-xl hover:bg-secondary-content hover:cursor-pointer">
+    <div
+      className="card w-96 bg-base-300 shadow-xl hover:bg-secondary-content hover:cursor-pointer"
+      onClick={() => router.push(`http://localhost:3000/tasks/edit/${id}`)}
+    >
       <div className="card-body">
         <h2 className="card-title">
           {title}
