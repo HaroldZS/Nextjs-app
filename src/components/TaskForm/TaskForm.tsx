@@ -95,7 +95,7 @@ function TaskForm({ paramId }: { paramId: number }) {
         <button className="btn btn-secondary w-[90%]">
           {paramId ? "Edit Task" : "Create Task"}
         </button>
-        {paramId && (
+        {!!paramId && (
           <button
             className="btn btn-error w-[90%] mt-3 text-white"
             type="button"

@@ -15,8 +15,8 @@ function TaskCard({ id, title, description, status, createdAt }: Task) {
 
   return (
     <div
-      className="card w-96 bg-base-300 shadow-xl hover:bg-secondary-content hover:cursor-pointer"
-      onClick={() => router.push(`http://localhost:3000/tasks/edit/${id}`)}
+      className="card w-96 bg-base-300 shadow-xl hover:bg-secondary-content hover:cursor-pointer justify-self-center"
+      onClick={() => router.push(`/tasks/edit/${id}`)}
     >
       <div className="card-body">
         <h2 className="card-title">

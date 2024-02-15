@@ -3,7 +3,7 @@ import { TaskForm } from "@components/TaskForm/TaskForm";
 function NewTaskPage() {
   return (
     <>
-      <TaskForm />
+      <TaskForm paramId={0}/>
     </>
   );
 }
