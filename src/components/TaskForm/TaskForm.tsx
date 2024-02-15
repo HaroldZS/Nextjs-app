@@ -30,12 +30,12 @@ function TaskForm({ paramId }: { paramId: number }) {
       createTask();
     }
 
-    router.refresh();
     router.push("/");
+    router.refresh();
   };
 
   async function createTask() {
-    const res = await fetch("/api/tasks", {
+    await fetch("/api/tasks", {
       method: "POST",
       body: JSON.stringify({
         title,
@@ -46,7 +46,7 @@ function TaskForm({ paramId }: { paramId: number }) {
   }
 
   async function editTask() {
-    const res = await fetch(`/api/tasks/${paramId}`, {
+    await fetch(`/api/tasks/${paramId}`, {
       method: "PUT",
       body: JSON.stringify({
         title,
@@ -56,8 +56,14 @@ function TaskForm({ paramId }: { paramId: number }) {
     });
   }
 
+  async function deleteTask() {
+    await fetch(`/api/tasks/${paramId}`, { method: "DELETE" });
+    router.push("/");
+    router.refresh();
+  }
+
   return (
-    <div className="container flex mx-auto h-screen justify-center items-center">
+    <div className="container flex mx-auto h-auto mt-20 justify-center items-center">
       <form
         className="flex flex-col bg-base-300 w-1/3 px-5 py-10 rounded-md items-center shadow-xl"
         onSubmit={onSubmit}
@@ -89,6 +95,15 @@ function TaskForm({ paramId }: { paramId: number }) {
         <button className="btn btn-secondary w-[90%]">
           {paramId ? "Edit Task" : "Create Task"}
         </button>
+        {paramId && (
+          <button
+            className="btn btn-error w-[90%] mt-3 text-white"
+            type="button"
+            onClick={deleteTask}
+          >
+            Delete task
+          </button>
+        )}
       </form>
     </div>
   );
